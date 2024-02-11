@@ -1,5 +1,5 @@
-### 인삿말
-여기는 상진이의 실험실입니다.
+## Next.js App Router Course - Starter
 
-* [노션](https://www.notion.so/725b5d361b0644b18126fcfc5bc5c7e7)
-* [배포](https://vercel.com/lee3jjang/sjlab)
+This is the starter template for the Next.js App Router Course. It contains the starting code for the dashboard application.
+
+For more information, see the [course curriculum](https://nextjs.org/learn) on the Next.js Website.

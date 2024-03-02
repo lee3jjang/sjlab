@@ -10,18 +10,20 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '@/components/ui/tooltip';
+import { usePathname } from 'next/navigation';
 
 interface NavProps {
   isCollapsed: boolean;
   links: {
     title: string;
+    href?: string;
     label?: string;
     icon: LucideIcon;
-    variant: 'default' | 'ghost';
   }[];
 }
 
 export function Nav({ links, isCollapsed }: NavProps) {
+  const pathname = usePathname();
   return (
     <div
       data-collapsed={isCollapsed}
@@ -33,11 +35,16 @@ export function Nav({ links, isCollapsed }: NavProps) {
             <Tooltip key={index} delayDuration={0}>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  href={link.href ?? '#'}
                   className={cn(
-                    buttonVariants({ variant: link.variant, size: 'icon' }),
+                    buttonVariants({
+                      variant: link.href?.startsWith(pathname)
+                        ? 'default'
+                        : 'ghost',
+                      size: 'icon',
+                    }),
                     'h-9 w-9',
-                    link.variant === 'default' &&
+                    link.href?.startsWith(pathname) &&
                       'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white',
                   )}
                 >
@@ -57,10 +64,15 @@ export function Nav({ links, isCollapsed }: NavProps) {
           ) : (
             <Link
               key={index}
-              href="#"
+              href={link.href ?? '#'}
               className={cn(
-                buttonVariants({ variant: link.variant, size: 'sm' }),
-                link.variant === 'default' &&
+                buttonVariants({
+                  variant: link.href?.startsWith(pathname)
+                    ? 'default'
+                    : 'ghost',
+                  size: 'sm',
+                }),
+                link.href?.startsWith(pathname) &&
                   'dark:bg-muted dark:hover:bg-muted dark:text-white dark:hover:text-white',
                 'justify-start',
               )}
@@ -71,7 +83,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                 <span
                   className={cn(
                     'ml-auto',
-                    link.variant === 'default' &&
+                    link.href?.startsWith(pathname) &&
                       'text-background dark:text-white',
                   )}
                 >

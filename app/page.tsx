@@ -1,52 +1,93 @@
-import styles from '@/app/ui/home.module.css';
-import AcmeLogo from '@/app/ui/acme-logo';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import Link from 'next/link';
-import { lusitana } from './ui/fonts';
-import Image from 'next/image';
+'use client';
+
+import { HardDrive, Home, Play, Settings } from 'lucide-react';
+
+import { Nav } from './components/nav';
+import { useState } from 'react';
+import { Separator } from '@/components/ui/separator';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable';
+import { cn } from '@/lib/utils';
 
 export default function Page() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const defaultLayout = [265, 440, 655];
+  const navCollapsedSize = 4;
+
   return (
-    <main className="flex min-h-screen flex-col p-6">
-      <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
-        <AcmeLogo />
-      </div>
-      <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
-        <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
-          <div className={styles.shape} />
-          <p
-            className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}
-          >
-            <strong>Welcome to Acme.</strong> This is the example for the{' '}
-            <a href="https://nextjs.org/learn/" className="text-blue-500">
-              Next.js Learn Course
-            </a>
-            , brought to you by Vercel.
-          </p>
-          <Link
-            href="/login"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
-        </div>
-        <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
-          <Image
-            src="/hero-desktop.png"
-            width={1000}
-            height={760}
-            className="hidden md:block"
-            alt="Screenshots of the dashboard project showing desktop version"
+    <div className="hidden flex-col md:flex">
+      <ResizablePanelGroup
+        direction="horizontal"
+        onLayout={(sizes: number[]) => {
+          document.cookie = `react-resizable-panels:layout=${JSON.stringify(
+            sizes,
+          )}`;
+        }}
+        className="h-full max-h-[800px] items-stretch"
+      >
+        <ResizablePanel
+          defaultSize={defaultLayout[0]}
+          collapsedSize={navCollapsedSize}
+          collapsible={true}
+          minSize={15}
+          maxSize={20}
+          onCollapse={
+            ((collapsed: boolean) => {
+              setIsCollapsed(collapsed);
+              document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
+                collapsed,
+              )}`;
+            }) as any
+          }
+          className={cn(
+            isCollapsed &&
+              'min-w-[50px] transition-all duration-300 ease-in-out',
+          )}
+        >
+          <Nav
+            isCollapsed={isCollapsed}
+            links={[
+              {
+                title: '홈',
+                icon: Home,
+                variant: 'default',
+              },
+              {
+                title: '데이터',
+                icon: HardDrive,
+                variant: 'ghost',
+              },
+              {
+                title: '시뮬레이션',
+                icon: Play,
+                variant: 'ghost',
+              },
+            ]}
           />
-          <Image
-            src="/hero-mobile.png"
-            width={560}
-            height={620}
-            className="block md:hidden"
-            alt="Screenshots of the dashboard project showing mobile version"
+          <Separator />
+          <Nav
+            isCollapsed={isCollapsed}
+            links={[
+              {
+                title: '관리',
+                icon: Settings,
+                variant: 'ghost',
+              },
+            ]}
           />
-        </div>
-      </div>
-    </main>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
+          <div className="flex items-center px-4 py-2">
+            <h1 className="text-xl font-bold">홈</h1>
+          </div>
+          <Separator />
+          <div className="p-4">all</div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
   );
 }
